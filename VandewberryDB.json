@@ -1,0 +1,206 @@
+{
+  "recipes": [
+    {
+      "id": 1,
+      "name": "Beef Stroganoff",
+      "description": "Warm and creamy",
+      "materials": [
+        [ { "name": "Sour cream" } ],
+        [ { "name": "Parsley" } ],
+        [ { "name": "Ground beef" } ],
+        [ { "name": "Onions" } ],
+        [ { "name": "Mushrooms" } ],
+        [
+          {
+            "name": "Worcestire sauce",
+            "optional": true
+          }
+        ],
+        [
+          {
+            "name": "Marsala",
+            "optional": true
+          }
+        ],
+        [ { "name": "Pepper" } ]
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Chocolate chunk brownies",
+      "description": "yum",
+      "materials": [
+        [ { "name": "butter" } ],
+        [ { "name": "flour" } ],
+        [ { "name": "cocoa powder" } ],
+        [ { "name": "baking powder" } ],
+        [ { "name": "sugar" } ],
+        [ { "name": "chocolate chips" } ],
+        [ { "name": "eggs" } ]
+      ]
+    },
+    {
+      "id": 3,
+      "materials": [
+        [
+          {
+            "name": "Chicken",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Carrots",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Onion",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Celery",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Potatoes",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Garlic",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Rotini or Barley",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Chicken broth",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Cornstarch",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Rosemary",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Thyme",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Tobasco",
+            "due": ""
+          }
+        ]
+      ],
+      "name": "Chicken soup"
+    },
+    {
+      "id": 4,
+      "materials": [
+        [
+          {
+            "name": "Carrots",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Peas",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Celery",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Butter",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Onion",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Flour",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Salt",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Potatoes",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Thyme",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Pepper",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Celery salt",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Chicken broth",
+            "due": ""
+          }
+        ],
+        [
+          {
+            "name": "Milk",
+            "due": ""
+          }
+        ]
+      ],
+      "name": "Chicken pot pie",
+      "description": "Preheat oven to 425 degrees F (220 degrees C.) In a saucepan, combine chicken, carrots, peas, and celery. Add water to cover and boil for 15 minutes. Remove from heat, drain and set aside. In the saucepan over medium heat, cook onions in butter until soft and translucent. Stir in flour, salt, pepper, and celery seed. Slowly stir in chicken broth and milk. Simmer over medium-low heat until thick. Remove from heat and set aside. Place the chicken mixture in bottom pie crust. Pour hot liquid mixture over. Cover with top crust, seal edges, and cut away excess dough. Make several small slits in the top to allow steam to escape. Bake in the preheated oven for 30 to 35 minutes, or until pastry is golden brown and filling is bubbly. Cool for 10 minutes before serving."
+    }
+  ]
+}

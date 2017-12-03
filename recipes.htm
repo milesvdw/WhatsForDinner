@@ -1,0 +1,116 @@
+<html>
+    <head>
+        <!-- JS -->
+        <script src="jquery.min.js"></script>
+        <script src="trello_interface.js"></script>
+        <script type='text/javascript' src='knockout-latest.js'></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="knockstrap.min.js"></script>
+
+        <meta charset="utf-8">
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+        <style>
+            .recipe-row {
+                margin-bottom: 2px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <!-- navigation bar -->
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <a class="navbar-brand"><i class="glyphicon glyphicon-bullhorn"></i> Home </a>
+            </div>
+        </nav>
+
+        <!-- main body of our application -->
+        <div class="container">
+            <div class="col-sm-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3>Current Possibilities</h3>
+                    </div>
+                    <div class="panel-body" data-bind="foreach: vm.possibleRecipes">
+                        <div class="row recipe-row">
+                            <button class="btn btn-large btn-primary btn-block" data-toggle="collapse" data-bind="text: $data.name, attr: {'data-target': '#possible_recipe_details_' + $data.id}"></button>
+                            <div data-bind="attr: {id: 'possible_recipe_details_' + $data.id}" class="collapse">
+                                <div data-bind="text: $data.description">
+
+                                </div>
+                                <ul class="list-group" data-bind="foreach: $data.materials">
+                                    <li class="list-group-item">
+                                        <!--nested lists - each 'material' is a list of interchangeable 'ingredients'-->
+                                        <span data-bind="text: $data[0].name"></span>
+                                        <!-- ko foreach: $data.slice(1)-->
+                                        <span data-bind="text: 'or' + $data.name"></span>
+                                        <!-- /ko-->
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3>All Recipes</h3>
+                    </div>
+                    <div class="panel-body" data-bind="foreach: vm.allRecipes">
+                        <div class="row recipe-row">
+                            <button class="btn btn-large btn-primary btn-block" data-toggle="collapse" data-bind="text: $data.name, attr: {'data-target': '#all_recipe_details_' + $data.id}"></button>
+                            <div data-bind="attr: {id: 'all_recipe_details_' + $data.id}" class="collapse">
+                                <ul class="list-group" >
+                                    <li class="list-group-item" data-bind="text: $data.description">
+                                    </li>
+                                    <!--ko foreach: $data.materials-->
+                                    <li class="list-group-item" data-bind="css: {'list-group-item-danger': !isMaterialAvailable($data)}">
+                                        <!--nested lists - each 'material' is a list of interchangeable 'ingredients'-->
+                                        <span data-bind="text: $data[0].name"></span>
+                                        <!-- ko foreach: $data.slice(1)-->
+                                        <span data-bind="text: 'or' + $data.name"></span>
+                                        <!-- /ko-->
+                                    </li>
+                                    <!--/ko-->
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="panel panel-default" >
+                    <div class="panel-heading" id="add_recipe_header" data-toggle="collapse" data-target="#add_recipe_div">
+                        <h3>Create Recipe</h3>
+                    </div>
+                    <div class="panel-body collapse" id="add_recipe_div">
+                        <div class="row">
+                            <div id="new_recipe">
+                                <div class="form-group">
+                                    <label for="name">Recipe Name</label>
+                                    <input type="text" id="name" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="ingredients">Recipe Ingredients (one per line):</label>
+                                    <textarea id="ingredients" class="form-control" rows="7"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="description">Recipe Description/Instructions</label>
+                                    <textarea id="description" class="form-control" rows="10"></textarea>
+                                </div>
+                                <button class="btn btn-large btn-info" onclick="return submit_add_recipe_form();">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="recipes.js"></script>
+    </body>
+</html>
