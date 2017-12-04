@@ -1,4 +1,4 @@
-<html>
+﻿<html>
     <head>
         <!-- JS -->
         <script src="jquery.min.js"></script>
@@ -26,13 +26,15 @@
                 <a class="navbar-brand"><i class="glyphicon glyphicon-bullhorn"></i> Home </a>
             </div>
         </nav>
-
         <!-- main body of our application -->
         <div class="container">
             <div class="col-sm-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3>Current Possibilities</h3>
+                        <h4>
+                            Current Possibilities
+                        </h4>
+
                     </div>
                     <div class="panel-body" data-bind="foreach: vm.possibleRecipes">
                         <div class="row recipe-row">
@@ -58,7 +60,8 @@
                 </div>
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3>All Recipes</h3>
+                        <a class="btn btn-small pull-right icon-btn btn-success glyphicon btn-glyphicon glyphicon-plus img-circle text-success" onclick="open_add_recipe()"></a>
+                        <h4>All Recipes</h4>
                     </div>
                     <div class="panel-body" data-bind="foreach: vm.allRecipes">
                         <div class="row recipe-row">
@@ -87,7 +90,7 @@
             <div class="col-sm-6">
                 <div class="panel panel-default" >
                     <div class="panel-heading" id="add_recipe_header" data-toggle="collapse" data-target="#add_recipe_div">
-                        <h3>Create Recipe</h3>
+                        <h4>Create Recipe</h4>
                     </div>
                     <div class="panel-body collapse" id="add_recipe_div">
                         <div class="row">

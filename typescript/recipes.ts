@@ -30,6 +30,8 @@ function computePossibleRecipes(recipes: Recipe[], ingredients: Ingredient[]): R
     });
 }
 
+function open_add_recipe
+
 class ViewModel {
 
 
