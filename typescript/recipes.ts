@@ -9,10 +9,14 @@ function isMaterialAvailable(material: Material, ingredients: Ingredient[] = vm.
     return !!match;
 }
 
+function fuzzyCompare(str1, str2, fuzz) {
+    return str1 == str2 || str1 == str2 + fuzz || str1 + fuzz == str2;
+}
+
 function compareIngredients(a: Ingredient, b: Ingredient) {
-    return a.name.toLowerCase() == b.name.toLowerCase()
-        || a.name.toLowerCase() == b.name.toLowerCase() + 's'
-        || a.name.toLowerCase() + 's' == b.name.toLowerCase();
+    var str1 = a.name.replace(' ', '').toLowerCase();
+    var str2 = b.name.replace(' ', '').toLowerCase();
+    return fuzzyCompare(str1, str2, 's') || fuzzyCompare(str1, str2, 'cooked');
 }
 
 function isIngredientAvailable(ingredient: Ingredient, ingredients: Ingredient[] = vm.availableIngredients()): boolean {
