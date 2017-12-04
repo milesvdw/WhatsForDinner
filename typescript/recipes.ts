@@ -9,9 +9,15 @@ function isMaterialAvailable(material: Material, ingredients: Ingredient[] = vm.
     return !!match;
 }
 
+function compareIngredients(a: Ingredient, b: Ingredient) {
+    return a.name.toLowerCase() == b.name.toLowerCase()
+        || a.name.toLowerCase() == b.name.toLowerCase() + 's'
+        || a.name.toLowerCase() + 's' == b.name.toLowerCase();
+}
+
 function isIngredientAvailable(ingredient: Ingredient, ingredients: Ingredient[] = vm.availableIngredients()): boolean {
     var ingredientInStock = ingredients.find(function (stockIngredient) {
-        return stockIngredient.name.toLowerCase() == ingredient.name.toLowerCase();
+        return compareIngredients(stockIngredient, ingredient);
     });
     return !!ingredientInStock
 }

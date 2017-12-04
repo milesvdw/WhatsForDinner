@@ -38,10 +38,10 @@
                         <div class="row recipe-row">
                             <button class="btn btn-large btn-primary btn-block" data-toggle="collapse" data-bind="text: $data.name, attr: {'data-target': '#possible_recipe_details_' + $data.id}"></button>
                             <div data-bind="attr: {id: 'possible_recipe_details_' + $data.id}" class="collapse">
-                                <div data-bind="text: $data.description">
-
-                                </div>
-                                <ul class="list-group" data-bind="foreach: $data.materials">
+                                <ul class="list-group">
+                                    <li class="list-group-item list-group-item-info" data-bind="text: $data.description">
+                                    </li>
+                                    <!--ko foreach: $data.materials-->
                                     <li class="list-group-item">
                                         <!--nested lists - each 'material' is a list of interchangeable 'ingredients'-->
                                         <span data-bind="text: $data[0].name"></span>
@@ -49,6 +49,7 @@
                                         <span data-bind="text: 'or' + $data.name"></span>
                                         <!-- /ko-->
                                     </li>
+                                    <!--/ko-->
                                 </ul>
                             </div>
                         </div>
@@ -64,7 +65,7 @@
                             <button class="btn btn-large btn-primary btn-block" data-toggle="collapse" data-bind="text: $data.name, attr: {'data-target': '#all_recipe_details_' + $data.id}"></button>
                             <div data-bind="attr: {id: 'all_recipe_details_' + $data.id}" class="collapse">
                                 <ul class="list-group" >
-                                    <li class="list-group-item" data-bind="text: $data.description">
+                                    <li class="list-group-item list-group-item-info" data-bind="text: $data.description">
                                     </li>
                                     <!--ko foreach: $data.materials-->
                                     <li class="list-group-item" data-bind="css: {'list-group-item-danger': !isMaterialAvailable($data)}">

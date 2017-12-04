@@ -6,9 +6,14 @@ function isMaterialAvailable(material, ingredients = vm.availableIngredients()) 
     });
     return !!match;
 }
+function compareIngredients(a, b) {
+    return a.name.toLowerCase() == b.name.toLowerCase()
+        || a.name.toLowerCase() == b.name.toLowerCase() + 's'
+        || a.name.toLowerCase() + 's' == b.name.toLowerCase();
+}
 function isIngredientAvailable(ingredient, ingredients = vm.availableIngredients()) {
     var ingredientInStock = ingredients.find(function (stockIngredient) {
-        return stockIngredient.name.toLowerCase() == ingredient.name.toLowerCase();
+        return compareIngredients(stockIngredient, ingredient);
     });
     return !!ingredientInStock;
 }
