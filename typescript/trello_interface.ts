@@ -9,6 +9,7 @@ class Board {
 
 class Ingredient {
     name: string;
+    quantity: string;
     due: string;
 }
 
@@ -21,17 +22,23 @@ class Recipe {
     name: string;
 
     public static ParseIngredients(raw_ingredients: string): Material[] {
-        return raw_ingredients.split('\n').map(function (interchangable_ingredients: string) {
-            return interchangable_ingredients.split(',').map(function (ingredient) {
-                return { 
-                    name: ingredient,
+        var ingredientRows = $(".add_recipe_ingredient_row");
+        var materials = ingredientRows.toArray().map(function (ingredientRow) { //TODO: I think there ought to be a better way to map the selector to the list than this...
+            var quantity: string = $(ingredientRow).find(".ingredient_qty").val() as string;
+            var ingredients: string[] = ($(ingredientRow).find(".ingredient_name").val() as string).split(',');
+            
+            return ingredients.map(function(i) {
+                return {
+                    quantity: quantity,
+                    name: i.trim(),
                     due: null
-                };
+                } as Ingredient
             });
         });
+        return materials;
     }
 
-    public constructor(init?: Partial<Recipe>) {
+    public constructor(init?: Partial<Recipe>) { //TODO: I think smart models are the wrong approach here, I should refactor this
         Object.assign(this, init);
     }
 
@@ -62,6 +69,13 @@ class Recipe {
 
 
 namespace Trello {
+    export function DeleteRecipe(id, then) {
+        var url: string = "/recipes/delete/"
+            + "?id="
+            + id;
+        simpleAjaxCall(url, then);
+    }
+
     export function GetBoard(boardID: string, then: Function): void {
         var url: string = "https://api.trello.com/1/boards/"
             + boardID

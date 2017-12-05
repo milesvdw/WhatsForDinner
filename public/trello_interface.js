@@ -34,18 +34,30 @@ class Recipe {
         Object.assign(this, init);
     }
     static ParseIngredients(raw_ingredients) {
-        return raw_ingredients.split('\n').map(function (interchangable_ingredients) {
-            return interchangable_ingredients.split(',').map(function (ingredient) {
+        var ingredientRows = $(".add_recipe_ingredient_row");
+        var materials = ingredientRows.toArray().map(function (ingredientRow) {
+            var quantity = $(ingredientRow).find(".ingredient_qty").val();
+            var ingredients = $(ingredientRow).find(".ingredient_name").val().split(',');
+            return ingredients.map(function (i) {
                 return {
-                    name: ingredient,
+                    quantity: quantity,
+                    name: i.trim(),
                     due: null
                 };
             });
         });
+        return materials;
     }
 }
 var Trello;
 (function (Trello) {
+    function DeleteRecipe(id, then) {
+        var url = "/recipes/delete/"
+            + "?id="
+            + id;
+        simpleAjaxCall(url, then);
+    }
+    Trello.DeleteRecipe = DeleteRecipe;
     function GetBoard(boardID, then) {
         var url = "https://api.trello.com/1/boards/"
             + boardID

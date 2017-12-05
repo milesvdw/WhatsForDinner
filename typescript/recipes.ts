@@ -34,7 +34,34 @@ function computePossibleRecipes(recipes: Recipe[], ingredients: Ingredient[]): R
     });
 }
 
-function open_add_recipe
+function add_recipe_add_ingredient_row() {
+    $("#add_recipe_add_ingredient_location").before(
+        `
+        <div class="row add_recipe_ingredient_row">
+            <div class="col-sm-2">
+                <input type="text" class="ingredient_qty form-control" />
+            </div>
+            <div class="col-sm-9">
+                <input type="text" class="ingredient_name form-control" />
+            </div>
+            <div class="col-sm-1">
+                    &nbsp;<a class="glyphicon glyphicon-remove-circle glyph-center glyph-button" onclick="remove_row(this)"></a>
+            </div>
+        </div>
+        `
+    );
+}
+
+function remove_row(element) {
+    $(element).closest(".row").fadeOut(function () { $(this).remove(); });
+}
+
+function delete_recipe(id) {
+    Trello.DeleteRecipe(id, function (data) { console.log(data)});
+    vm.allRecipes.remove(function (recipe: Recipe) {
+        return recipe.id == id;
+    });
+}
 
 class ViewModel {
 
@@ -55,13 +82,17 @@ var vm = new ViewModel();
 
 ko.applyBindings(vm);
 
+$("body").on("mouseover mouseout", '.recipe-row .btn', function () {
+    $(this).toggleClass('active');
+});
+
 Trello.GetListCards(foodInventoryTableId, function (cards) {
     vm.availableIngredients(cards);
 });
 
 Trello.GetRecipes(function (recipes) {
     vm.allRecipes(recipes)
-})
+});
 
 function submit_add_recipe_form() {
     var newRecipe: Recipe = new Recipe({
@@ -73,7 +104,8 @@ function submit_add_recipe_form() {
 
     $("#new_recipe #name").val("");
     $("#new_recipe #description").val("");
-    $("#new_recipe #ingredients").val("");
+    $("#new_recipe .add_recipe_ingredient_row").not(':first').remove();
+    $("#new_recipe .add_recipe_ingredient_row input").val("");
     $("#add_recipe_header").click();
 
     newRecipe.Save(function () {

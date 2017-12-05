@@ -59,5 +59,25 @@ app.post('/recipes', function (req, res) {
     db.push('/recipes', allRecipes);
 
     res.setHeader('Content-Type', 'application/json');
-    res.send({ id: req.body.id});
-})
+    res.send({ id: req.body.id });
+});
+
+app.get('/recipes/delete', function (req, res) {
+    var db = new JsonDB("VandewberryDB", true, false);
+    var id = req.query.id; // $_GET["id"]
+    var allRecipes = db.getData("/recipes");
+    var toDelete = allRecipes.findIndex(function (recipe) {
+        return recipe.id == id;
+    });
+    var data = { requestedID: id};
+    if (toDelete) {
+        data.recipe = db.getData("/recipes[" + toDelete + "]");
+        db.delete("/recipes[" + toDelete + "]");
+        data.status = "success";
+    }
+    else {
+        data.status = "failed - no such recipe exists";
+    }
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(data));
+});
