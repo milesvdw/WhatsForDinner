@@ -53,7 +53,9 @@ app.get('/recipes', function (req, res) {
 app.post('/recipes', function (req, res) {
     var db = new JsonDB("VandewberryDB", true, false);
     var allRecipes = db.getData("/recipes");
-    var lastIndex = allRecipes[allRecipes.length - 1].id;
+    if (allRecipes.length > 0)
+        var lastIndex = allRecipes[allRecipes.length - 1].id;
+    else var lastIndex = 0;
     req.body.id = lastIndex + 1;
     allRecipes.push(req.body);
     db.push('/recipes', allRecipes);
