@@ -56,10 +56,7 @@
                                     <!--ko foreach: $data.materials-->
                                     <li class="list-group-item">
                                         <!--nested lists - each 'material' is a list of interchangeable 'ingredients'-->
-                                        <span data-bind="text: $data[0].name"></span>
-                                        <!-- ko foreach: $data.slice(1)-->
-                                        <span data-bind="text: 'or ' + $data.name"></span>
-                                        <!-- /ko-->
+                                        <span data-bind="text: $data.map(function(ingredient) { return ingredient.name }).join('or ')"></span>
                                     </li>
                                     <!--/ko-->
                                 </ul>
@@ -77,8 +74,9 @@
                     </div>
                     <div class="panel-body" data-bind="foreach: vm.allRecipes">
                         <div class="row recipe-row">
-                            <span class="btn btn-block btn-secondary">
-                                <span data-toggle="collapse" data-bind="text: $data.name, attr: {'data-target': '#all_recipe_details_' + $data.id}"></span>
+                            <span class="btn btn-block btn-secondary" data-bind="attr: {'data-target': '#all_recipe_details_' + $data.id}" data-toggle="collapse">
+                                <a class=" pull-left glyphicon glyphicon-pencil glyph-button" data-bind="click: function() {edit_recipe($data.id); remove_row($element);}" data-target="#add_recipe_modal" data-toggle="modal"></a>
+                                <span data-bind="text: $data.name"></span>
                                 <a class=" pull-right glyphicon glyphicon-remove-circle glyph-button" data-bind="click: function() {delete_recipe($data.id); remove_row($element);}"></a>
                             </span>
                             <div data-bind="attr: {id: 'all_recipe_details_' + $data.id}" class="collapse well">
@@ -88,10 +86,7 @@
                                     <!--ko foreach: $data.materials-->
                                     <li class="list-group-item" data-bind="css: {'list-group-item-danger': !isMaterialAvailable($data)}">
                                         <!--nested lists - each 'material' is a list of interchangeable 'ingredients'-->
-                                        <span data-bind="text: $data[0].name"></span>
-                                        <!-- ko foreach: $data.slice(1)-->
-                                        <span data-bind="text: 'or ' + $data.name"></span>
-                                        <!-- /ko-->
+                                        <span data-bind="text: print_material($data)"></span>
                                     </li>
                                     <!--/ko-->
                                 </ul>
@@ -119,7 +114,7 @@
                                         <div class="col-sm-12">
                                             <div class="form-group">
                                                 <label for="name">Recipe Name</label>
-                                                <input type="text" id="name" class="form-control" />
+                                                <input type="text" id="name" class="form-control" data-bind="value: vm.add_edit_recipe().name"/>
                                             </div>
                                         </div>
                                     </div>
@@ -138,33 +133,35 @@
                                             <label>Name</label>
                                         </div>
                                     </div>
-                                    <div class="row add_recipe_ingredient_row">
+                                    <div class="row add_recipe_ingredient_row" data-bind="foreach: vm.add_edit_recipe().materials">
                                         <div class="col-sm-2">
-                                            <input type="text" class="ingredient_qty form-control" />
+                                            <input type="text" class="ingredient_qty form-control" data-bind="value: $data[0].quantity"/>
                                         </div>
                                         <div class="col-sm-9">
-                                            <input type="text" class="ingredient_name form-control" />
+                                            <input type="text" class="ingredient_name form-control" data-bind="value: $data[0].name" />
                                         </div>
                                         <div class="col-sm-1">
-                                                &nbsp;<a class="glyphicon glyphicon-remove-circle glyph-center glyph-button" onclick="remove_row(this)"></a>
+                                                &nbsp;<a class="glyphicon glyphicon-remove-circle glyph-center glyph-button" onclick="remove_row($data)"></a>
                                         </div>
                                     </div>
                                     <div class="invisible" id="add_recipe_add_ingredient_location"></div>
                                     <div class="row">
                                         <div class="col-sm-12 text-center">
-                                            <a class="glyphicon glyphicon-plus glyph-button pull-right" onclick="add_recipe_add_ingredient_row()"></a>
+                                            <a class="glyphicon glyphicon-plus glyph-button pull-right" onclick="vm.add_edit_recipe().materials.push([])"></a>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <div class="form-group">
                                                 <label for="description">Recipe Description/Instructions</label>
-                                                <textarea id="description" class="form-control" rows="10"></textarea>
+                                                <textarea id="description" class="form-control" rows="10" data-bind="value: vm.add_edit_recipe().description"></textarea>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <button class="btn btn-large btn-info pull-right" onclick="return submit_add_recipe_form();">Save</button>
+                                        <div class="col-sm-12">
+                                            <button class="btn btn-large btn-info pull-right" onclick="return submit_add_recipe_form();" data-target="#add_recipe_modal" data-toggle="modal">Save</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

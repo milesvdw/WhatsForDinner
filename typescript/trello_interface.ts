@@ -16,27 +16,10 @@ class Ingredient {
 type Material = Ingredient[];
 
 class Recipe {
-    id: number;
+    id: number = 0;
     materials: Material[]; //each top-level item represents a list of ingredients which may replace/substitute each other
     description: string;
     name: string;
-
-    public static ParseIngredients(raw_ingredients: string): Material[] {
-        var ingredientRows = $(".add_recipe_ingredient_row");
-        var materials = ingredientRows.toArray().map(function (ingredientRow) { //TODO: I think there ought to be a better way to map the selector to the list than this...
-            var quantity: string = $(ingredientRow).find(".ingredient_qty").val() as string;
-            var ingredients: string[] = ($(ingredientRow).find(".ingredient_name").val() as string).split(',');
-            
-            return ingredients.map(function(i) {
-                return {
-                    quantity: quantity,
-                    name: i.trim(),
-                    due: null
-                } as Ingredient
-            });
-        });
-        return materials;
-    }
 
     public constructor(init?: Partial<Recipe>) { //TODO: I think smart models are the wrong approach here, I should refactor this
         Object.assign(this, init);
@@ -47,7 +30,7 @@ class Recipe {
             url: "/recipes",
             dataType: "json",
             data: {
-                id: 0,
+                id: this.id,
                 materials: this.materials,
                 description: this.description,
                 name: this.name
@@ -64,6 +47,32 @@ class Recipe {
         }).done(function () {
             return;
         });
+    }
+
+    ParseIngredients(): Recipe {
+        var parsedMaterials: Material[] = this.materials.map(function (ingredientRow) { //TODO: I think there ought to be a better way to map the selector to the list than this...
+            var quantity: string = ingredientRow[0].quantity;
+            var ingredients: string[] = ingredientRow[0].name.split(',');
+
+            return ingredients.map(function (i) {
+                return {
+                    quantity: quantity,
+                    name: i.trim(),
+                    due: null
+                } as Ingredient
+            });
+        }) || [];
+        this.materials = parsedMaterials || [];
+        return this;
+    }
+
+    UnparseIngredients(): Recipe {
+        this.materials = this.materials.map(function (material) {
+            var combinedIngredient: Ingredient = material[0];
+            combinedIngredient.name = material.map(function (ingredient) { return ingredient.name }).join(', ');
+            return [combinedIngredient]
+        });
+        return this;
     }
 }
 

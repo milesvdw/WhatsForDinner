@@ -34,26 +34,18 @@ function computePossibleRecipes(recipes: Recipe[], ingredients: Ingredient[]): R
     });
 }
 
-function add_recipe_add_ingredient_row() {
-    $("#add_recipe_add_ingredient_location").before(
-        `
-        <div class="row add_recipe_ingredient_row">
-            <div class="col-sm-2">
-                <input type="text" class="ingredient_qty form-control" />
-            </div>
-            <div class="col-sm-9">
-                <input type="text" class="ingredient_name form-control" />
-            </div>
-            <div class="col-sm-1">
-                    &nbsp;<a class="glyphicon glyphicon-remove-circle glyph-center glyph-button" onclick="remove_row(this)"></a>
-            </div>
-        </div>
-        `
-    );
+function remove_row(material: Material) {
+    var index = vm.add_edit_recipe().materials.indexOf(material);
+
+    if (index > -1) {
+        vm.add_edit_recipe().materials.splice(index, 1);
+    }
 }
 
-function remove_row(element) {
-    $(element).closest(".row").fadeOut(function () { $(this).remove(); });
+function print_material(material: Material) {
+    var quantity: string = material[0].quantity ? material[0].quantity + ' ' : '';
+    var ingredients = material.map(function (ingredient) { return ingredient.name }).join('or ');
+    return quantity + ingredients;
 }
 
 function delete_recipe(id) {
@@ -63,10 +55,14 @@ function delete_recipe(id) {
     });
 }
 
+function edit_recipe(id) {
+    vm.add_edit_recipe(vm.allRecipes().find(function (recipe) { return recipe.id == id; }).UnparseIngredients());
+}
+
 class ViewModel {
 
 
-
+    add_edit_recipe = ko.observable(new Recipe());
     availableIngredients = ko.observableArray([]);
     allRecipes = ko.observableArray([]);
 
@@ -95,22 +91,13 @@ Trello.GetRecipes(function (recipes) {
 });
 
 function submit_add_recipe_form() {
-    var newRecipe: Recipe = new Recipe({
-            id: 0,
-            name: $("#new_recipe #name").val() as string,
-            description: $("#new_recipe #description").val() as string,
-            materials: Recipe.ParseIngredients($("#new_recipe #ingredients").val() as string)
-    });
-
-    $("#new_recipe #name").val("");
-    $("#new_recipe #description").val("");
-    $("#new_recipe .add_recipe_ingredient_row").not(':first').remove();
-    $("#new_recipe .add_recipe_ingredient_row input").val("");
-    $("#add_recipe_header").click();
+    var newRecipe: Recipe = vm.add_edit_recipe().ParseIngredients();
 
     newRecipe.Save(function () {
-        vm.allRecipes.push(newRecipe);
+        vm.allRecipes.push(new Recipe(newRecipe));
     });
+
+    vm.add_edit_recipe(new Recipe());
 
     return false;
 }

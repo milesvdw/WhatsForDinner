@@ -28,23 +28,16 @@ function computePossibleRecipes(recipes, ingredients) {
         return !(missingMaterials.length > 0);
     });
 }
-function add_recipe_add_ingredient_row() {
-    $("#add_recipe_add_ingredient_location").before(`
-        <div class="row add_recipe_ingredient_row">
-            <div class="col-sm-2">
-                <input type="text" class="ingredient_qty form-control" />
-            </div>
-            <div class="col-sm-9">
-                <input type="text" class="ingredient_name form-control" />
-            </div>
-            <div class="col-sm-1">
-                    &nbsp;<a class="glyphicon glyphicon-remove-circle glyph-center glyph-button" onclick="remove_row(this)"></a>
-            </div>
-        </div>
-        `);
+function remove_row(material) {
+    var index = vm.add_edit_recipe().materials.indexOf(material);
+    if (index > -1) {
+        vm.add_edit_recipe().materials.splice(index, 1);
+    }
 }
-function remove_row(element) {
-    $(element).closest(".row").fadeOut(function () { $(this).remove(); });
+function print_material(material) {
+    var quantity = material[0].quantity ? material[0].quantity + ' ' : '';
+    var ingredients = material.map(function (ingredient) { return ingredient.name; }).join('or ');
+    return quantity + ingredients;
 }
 function delete_recipe(id) {
     Trello.DeleteRecipe(id, function (data) { console.log(data); });
@@ -52,8 +45,12 @@ function delete_recipe(id) {
         return recipe.id == id;
     });
 }
+function edit_recipe(id) {
+    vm.add_edit_recipe(vm.allRecipes().find(function (recipe) { return recipe.id == id; }).UnparseIngredients());
+}
 class ViewModel {
     constructor() {
+        this.add_edit_recipe = ko.observable(new Recipe());
         this.availableIngredients = ko.observableArray([]);
         this.allRecipes = ko.observableArray([]);
         this.possibleRecipes = ko.computed(() => {
@@ -73,19 +70,10 @@ Trello.GetRecipes(function (recipes) {
     vm.allRecipes(recipes);
 });
 function submit_add_recipe_form() {
-    var newRecipe = new Recipe({
-        id: 0,
-        name: $("#new_recipe #name").val(),
-        description: $("#new_recipe #description").val(),
-        materials: Recipe.ParseIngredients($("#new_recipe #ingredients").val())
-    });
-    $("#new_recipe #name").val("");
-    $("#new_recipe #description").val("");
-    $("#new_recipe .add_recipe_ingredient_row").not(':first').remove();
-    $("#new_recipe .add_recipe_ingredient_row input").val("");
-    $("#add_recipe_header").click();
+    var newRecipe = vm.add_edit_recipe().ParseIngredients();
     newRecipe.Save(function () {
-        vm.allRecipes.push(newRecipe);
+        vm.allRecipes.push(new Recipe(newRecipe));
     });
+    vm.add_edit_recipe(new Recipe());
     return false;
 }

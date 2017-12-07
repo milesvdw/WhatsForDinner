@@ -8,12 +8,13 @@ class Ingredient {
 }
 class Recipe {
     constructor(init) {
+        this.id = 0;
         this.Save = (then) => {
             $.ajax({
                 url: "/recipes",
                 dataType: "json",
                 data: {
-                    id: 0,
+                    id: this.id,
                     materials: this.materials,
                     description: this.description,
                     name: this.name
@@ -33,11 +34,10 @@ class Recipe {
         };
         Object.assign(this, init);
     }
-    static ParseIngredients(raw_ingredients) {
-        var ingredientRows = $(".add_recipe_ingredient_row");
-        var materials = ingredientRows.toArray().map(function (ingredientRow) {
-            var quantity = $(ingredientRow).find(".ingredient_qty").val();
-            var ingredients = $(ingredientRow).find(".ingredient_name").val().split(',');
+    ParseIngredients() {
+        var parsedMaterials = this.materials.map(function (ingredientRow) {
+            var quantity = ingredientRow[0].quantity;
+            var ingredients = ingredientRow[0].name.split(',');
             return ingredients.map(function (i) {
                 return {
                     quantity: quantity,
@@ -45,8 +45,17 @@ class Recipe {
                     due: null
                 };
             });
+        }) || [];
+        this.materials = parsedMaterials || [];
+        return this;
+    }
+    UnparseIngredients() {
+        this.materials = this.materials.map(function (material) {
+            var combinedIngredient = material[0];
+            combinedIngredient.name = material.map(function (ingredient) { return ingredient.name; }).join(', ');
+            return [combinedIngredient];
         });
-        return materials;
+        return this;
     }
 }
 var Trello;
