@@ -13,11 +13,14 @@ class Ingredient {
     due: string = "";
 }
 
-type Material = Ingredient[];
+class Material {
+    ingredients: Ingredient[] = [new Ingredient()];
+    required: boolean = true;
+};
 
 class Recipe {
     id: string = "0";
-    materials: KnockoutObservableArray<Material> = ko.observableArray([[new Ingredient()]] as Material[]); //each top-level item represents a list of ingredients which may replace/substitute each other
+    materials: KnockoutObservableArray<Material> = ko.observableArray([new Material()]); //each top-level item represents a list of ingredients which may replace/substitute each other
     description: string = "";
     name: string = "";
 
@@ -54,24 +57,31 @@ class Recipe {
         var parsedMaterials: Material[] = this.materials().map(function (ingredientRow) { //TODO: I think there ought to be a better way to map the selector to the list than this...
             var quantity: string = ingredientRow[0].quantity;
             var ingredients: string[] = ingredientRow[0].name.split(',');
+            var required: boolean = ingredientRow[0].required;
 
-            return ingredients.map(function (i) {
-                return {
-                    quantity: quantity,
-                    name: i.trim(),
-                    due: null
-                } as Ingredient
-            });
+            return {
+                ingredients: ingredients.map(function (i) {
+                    return {
+                        quantity: quantity,
+                        name: i.trim(),
+                        due: null
+                    } as Ingredient
+                }),
+                required: required
+            }
         }) || [];
         this.materials(parsedMaterials || []);
         return this;
     }
 
     UnparseIngredients(): Recipe {
-        this.materials(this.materials().map(function (material) {
+        this.materials(this.materials().map(function (material: Material) {
             var combinedIngredient: Ingredient = material[0];
-            combinedIngredient.name = material.map(function (ingredient) { return ingredient.name }).join(', ');
-            return [combinedIngredient]
+            combinedIngredient.name = material.ingredients.map(function (ingredient) { return ingredient.name }).join(', ');
+            return {
+                ingredients: [combinedIngredient],
+                required: material.required
+            }
         }));
         return this;
     }
