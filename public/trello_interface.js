@@ -5,17 +5,25 @@ var keyTokenString = "key=" + apiKey + "&token=" + apiToken;
 class Board {
 }
 class Ingredient {
+    constructor() {
+        this.name = "";
+        this.quantity = "";
+        this.due = "";
+    }
 }
 class Recipe {
     constructor(init) {
-        this.id = 0;
+        this.id = "0";
+        this.materials = ko.observableArray([[new Ingredient()]]); //each top-level item represents a list of ingredients which may replace/substitute each other
+        this.description = "";
+        this.name = "";
         this.Save = (then) => {
             $.ajax({
                 url: "/recipes",
                 dataType: "json",
                 data: {
                     id: this.id,
-                    materials: this.materials,
+                    materials: this.materials(),
                     description: this.description,
                     name: this.name
                 },
@@ -33,9 +41,11 @@ class Recipe {
             });
         };
         Object.assign(this, init);
+        if (init && !ko.isObservable(init.materials))
+            this.materials = ko.observableArray(init.materials || []);
     }
     ParseIngredients() {
-        var parsedMaterials = this.materials.map(function (ingredientRow) {
+        var parsedMaterials = this.materials().map(function (ingredientRow) {
             var quantity = ingredientRow[0].quantity;
             var ingredients = ingredientRow[0].name.split(',');
             return ingredients.map(function (i) {
@@ -46,15 +56,15 @@ class Recipe {
                 };
             });
         }) || [];
-        this.materials = parsedMaterials || [];
+        this.materials(parsedMaterials || []);
         return this;
     }
     UnparseIngredients() {
-        this.materials = this.materials.map(function (material) {
+        this.materials(this.materials().map(function (material) {
             var combinedIngredient = material[0];
             combinedIngredient.name = material.map(function (ingredient) { return ingredient.name; }).join(', ');
             return [combinedIngredient];
-        });
+        }));
         return this;
     }
 }

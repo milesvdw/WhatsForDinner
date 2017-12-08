@@ -27,19 +27,15 @@ function isIngredientAvailable(ingredient: Ingredient, ingredients: Ingredient[]
 }
 function computePossibleRecipes(recipes: Recipe[], ingredients: Ingredient[]): Recipe[] {
     return recipes.filter(function (recipe: Recipe) {
-        var missingMaterials = recipe.materials.filter(function (material: Material) {
+        var missingMaterials = recipe.materials().filter(function (material: Material) {
             return !isMaterialAvailable(material, ingredients);
         });
         return !(missingMaterials.length > 0);
     });
 }
 
-function remove_row(material: Material) {
-    var index = vm.add_edit_recipe().materials.indexOf(material);
-
-    if (index > -1) {
-        vm.add_edit_recipe().materials.splice(index, 1);
-    }
+function remove_row(row) {
+    $(row).closest('.row').remove();
 }
 
 function print_material(material: Material) {
@@ -63,8 +59,8 @@ class ViewModel {
 
 
     add_edit_recipe = ko.observable(new Recipe());
-    availableIngredients = ko.observableArray([]);
-    allRecipes = ko.observableArray([]);
+    availableIngredients = ko.observableArray([] as Ingredient[]);
+    allRecipes = ko.observableArray([] as Recipe[]);
 
 
 
@@ -87,14 +83,21 @@ Trello.GetListCards(foodInventoryTableId, function (cards) {
 });
 
 Trello.GetRecipes(function (recipes) {
-    vm.allRecipes(recipes)
+    vm.allRecipes(recipes.map(function (recipe) { return new Recipe(recipe) }));
+    vm.allRecipes.sort(function (r1, r2) { return r1.name.localeCompare(r2.name) })
 });
 
-function submit_add_recipe_form() {
+function save_recipe() {
     var newRecipe: Recipe = vm.add_edit_recipe().ParseIngredients();
 
-    newRecipe.Save(function () {
+    newRecipe.Save(function (data) {
+        if (newRecipe.id != "0") {
+            if (data.id != newRecipe.id) console.log("ERROR: Saved id not equal to id sent!");
+            var toRemove = vm.allRecipes().find(function (recipe) { return recipe.id == data.id });
+            vm.allRecipes.remove(toRemove);
+        }
         vm.allRecipes.push(new Recipe(newRecipe));
+        vm.allRecipes.sort(function (r1, r2) { return r1.name.localeCompare(r2.name)});
     });
 
     vm.add_edit_recipe(new Recipe());

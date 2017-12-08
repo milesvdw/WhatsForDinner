@@ -8,21 +8,22 @@ class Board {
 }
 
 class Ingredient {
-    name: string;
-    quantity: string;
-    due: string;
+    name: string = "";
+    quantity: string = "";
+    due: string = "";
 }
 
 type Material = Ingredient[];
 
 class Recipe {
-    id: number = 0;
-    materials: Material[]; //each top-level item represents a list of ingredients which may replace/substitute each other
-    description: string;
-    name: string;
+    id: string = "0";
+    materials: KnockoutObservableArray<Material> = ko.observableArray([[new Ingredient()]] as Material[]); //each top-level item represents a list of ingredients which may replace/substitute each other
+    description: string = "";
+    name: string = "";
 
-    public constructor(init?: Partial<Recipe>) { //TODO: I think smart models are the wrong approach here, I should refactor this
+    public constructor(init?: Partial<Recipe>) {
         Object.assign(this, init);
+        if (init && !ko.isObservable(init.materials)) this.materials = ko.observableArray(init.materials as Material[] || []);
     }
 
     public Save = (then: Function): void => {
@@ -31,7 +32,7 @@ class Recipe {
             dataType: "json",
             data: {
                 id: this.id,
-                materials: this.materials,
+                materials: this.materials(),
                 description: this.description,
                 name: this.name
             },
@@ -50,7 +51,7 @@ class Recipe {
     }
 
     ParseIngredients(): Recipe {
-        var parsedMaterials: Material[] = this.materials.map(function (ingredientRow) { //TODO: I think there ought to be a better way to map the selector to the list than this...
+        var parsedMaterials: Material[] = this.materials().map(function (ingredientRow) { //TODO: I think there ought to be a better way to map the selector to the list than this...
             var quantity: string = ingredientRow[0].quantity;
             var ingredients: string[] = ingredientRow[0].name.split(',');
 
@@ -62,16 +63,16 @@ class Recipe {
                 } as Ingredient
             });
         }) || [];
-        this.materials = parsedMaterials || [];
+        this.materials(parsedMaterials || []);
         return this;
     }
 
     UnparseIngredients(): Recipe {
-        this.materials = this.materials.map(function (material) {
+        this.materials(this.materials().map(function (material) {
             var combinedIngredient: Ingredient = material[0];
             combinedIngredient.name = material.map(function (ingredient) { return ingredient.name }).join(', ');
             return [combinedIngredient]
-        });
+        }));
         return this;
     }
 }

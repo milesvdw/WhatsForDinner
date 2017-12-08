@@ -22,17 +22,14 @@ function isIngredientAvailable(ingredient, ingredients = vm.availableIngredients
 }
 function computePossibleRecipes(recipes, ingredients) {
     return recipes.filter(function (recipe) {
-        var missingMaterials = recipe.materials.filter(function (material) {
+        var missingMaterials = recipe.materials().filter(function (material) {
             return !isMaterialAvailable(material, ingredients);
         });
         return !(missingMaterials.length > 0);
     });
 }
-function remove_row(material) {
-    var index = vm.add_edit_recipe().materials.indexOf(material);
-    if (index > -1) {
-        vm.add_edit_recipe().materials.splice(index, 1);
-    }
+function remove_row(row) {
+    $(row).closest('.row').remove();
 }
 function print_material(material) {
     var quantity = material[0].quantity ? material[0].quantity + ' ' : '';
@@ -67,12 +64,20 @@ Trello.GetListCards(foodInventoryTableId, function (cards) {
     vm.availableIngredients(cards);
 });
 Trello.GetRecipes(function (recipes) {
-    vm.allRecipes(recipes);
+    vm.allRecipes(recipes.map(function (recipe) { return new Recipe(recipe); }));
+    vm.allRecipes.sort(function (r1, r2) { return r1.name.localeCompare(r2.name); });
 });
-function submit_add_recipe_form() {
+function save_recipe() {
     var newRecipe = vm.add_edit_recipe().ParseIngredients();
-    newRecipe.Save(function () {
+    newRecipe.Save(function (data) {
+        if (newRecipe.id != "0") {
+            if (data.id != newRecipe.id)
+                console.log("ERROR: Saved id not equal to id sent!");
+            var toRemove = vm.allRecipes().find(function (recipe) { return recipe.id == data.id; });
+            vm.allRecipes.remove(toRemove);
+        }
         vm.allRecipes.push(new Recipe(newRecipe));
+        vm.allRecipes.sort(function (r1, r2) { return r1.name.localeCompare(r2.name); });
     });
     vm.add_edit_recipe(new Recipe());
     return false;

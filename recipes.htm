@@ -75,7 +75,7 @@
                     <div class="panel-body" data-bind="foreach: vm.allRecipes">
                         <div class="row recipe-row">
                             <span class="btn btn-block btn-secondary" data-bind="attr: {'data-target': '#all_recipe_details_' + $data.id}" data-toggle="collapse">
-                                <a class=" pull-left glyphicon glyphicon-pencil glyph-button" data-bind="click: function() {edit_recipe($data.id); remove_row($element);}" data-target="#add_recipe_modal" data-toggle="modal"></a>
+                                <a class=" pull-left glyphicon glyphicon-pencil glyph-button" data-bind="click: function() {edit_recipe($data.id)}" data-target="#add_recipe_modal" data-toggle="modal"></a>
                                 <span data-bind="text: $data.name"></span>
                                 <a class=" pull-right glyphicon glyphicon-remove-circle glyph-button" data-bind="click: function() {delete_recipe($data.id); remove_row($element);}"></a>
                             </span>
@@ -133,21 +133,23 @@
                                             <label>Name</label>
                                         </div>
                                     </div>
-                                    <div class="row add_recipe_ingredient_row" data-bind="foreach: vm.add_edit_recipe().materials">
-                                        <div class="col-sm-2">
-                                            <input type="text" class="ingredient_qty form-control" data-bind="value: $data[0].quantity"/>
-                                        </div>
-                                        <div class="col-sm-9">
-                                            <input type="text" class="ingredient_name form-control" data-bind="value: $data[0].name" />
-                                        </div>
-                                        <div class="col-sm-1">
-                                                &nbsp;<a class="glyphicon glyphicon-remove-circle glyph-center glyph-button" onclick="remove_row($data)"></a>
+                                    <div class="add_recipe_ingredient_row" data-bind="foreach: vm.add_edit_recipe().materials">
+                                        <div class="row">
+                                            <div class="col-sm-2">
+                                                <input type="text" class="ingredient_qty form-control" data-bind="value: $data[0].quantity" />
+                                            </div>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="ingredient_name form-control" data-bind="value: $data[0].name" />
+                                            </div>
+                                            <div class="col-sm-1">
+                                                &nbsp;<a class="glyphicon glyphicon-remove-circle glyph-center glyph-button" data-bind="click: function() {remove_row($element); vm.add_edit_recipe().materials.remove($data); }"></a>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="invisible" id="add_recipe_add_ingredient_location"></div>
                                     <div class="row">
                                         <div class="col-sm-12 text-center">
-                                            <a class="glyphicon glyphicon-plus glyph-button pull-right" onclick="vm.add_edit_recipe().materials.push([])"></a>
+                                            <a class="glyphicon glyphicon-plus glyph-button pull-right" onclick="vm.add_edit_recipe().materials.push([new Ingredient()])"></a>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -160,7 +162,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-12">
-                                            <button class="btn btn-large btn-info pull-right" onclick="return submit_add_recipe_form();" data-target="#add_recipe_modal" data-toggle="modal">Save</button>
+                                            <button class="btn btn-large btn-info pull-right" onclick="return save_recipe();" data-target="#add_recipe_modal" data-toggle="modal">Save</button>
                                         </div>
                                     </div>
                                 </div>
