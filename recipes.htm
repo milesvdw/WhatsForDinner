@@ -49,8 +49,8 @@
                             <span class="btn btn-block btn-secondary">
                                 <span data-toggle="collapse" data-bind="text: $data.name, attr: {'data-target': '#possible_recipe_details_' + $data.id}"></span>
                             </span>
-                            <div data-bind="attr: {id: 'possible_recipe_details_' + $data.id}" class="collapse well">
-                                <ul class="list-group">
+                            <div data-bind="attr: {id: 'possible_recipe_details_' + $data.id}" class="collapse">
+                                <ul class="list-group well">
                                     <li class="list-group-item list-group-item-info" data-bind="text: $data.description">
                                     </li>
                                     <!--ko foreach: $data.materials-->
@@ -79,8 +79,8 @@
                                 <span data-bind="text: $data.name"></span>
                                 <a class=" pull-right glyphicon glyphicon-remove-circle glyph-button" data-bind="click: function() {delete_recipe($data.id); remove_row($element);}"></a>
                             </span>
-                            <div data-bind="attr: {id: 'all_recipe_details_' + $data.id}" class="collapse well">
-                                <ul class="list-group" >
+                            <div data-bind="attr: {id: 'all_recipe_details_' + $data.id}" class="collapse">
+                                <ul class="list-group well" >
                                     <li class="list-group-item list-group-item-info" data-bind="text: $data.description">
                                     </li>
                                     <!--ko foreach: $data.materials-->
@@ -129,7 +129,10 @@
                                         <div class="col-sm-2">
                                             <label>Qty</label>
                                         </div>
-                                        <div class="col-sm-9">
+                                        <div class="col-sm-2">
+                                            <label>Qty</label>
+                                        </div>
+                                        <div class="col-sm-8">
                                             <label>Name</label>
                                         </div>
                                     </div>
