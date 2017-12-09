@@ -40,7 +40,7 @@ app.get('/recipes', function (req, res) {
     //If you put false, you'll have to call the save() method. 
     //The third argument is to ask JsonDB to save the database in an human readable format. (default false) 
     var db = new JsonDB("VandewberryDB", true, false);
-    var id = req.query.id; // $_GET["id"]
+    var id = parseInt(req.query.id); // $_GET["id"]
     var data = {};
     if (id) data = db.getData("/" + id);
     else data = db.getData("/recipes");
@@ -53,16 +53,16 @@ app.get('/recipes', function (req, res) {
 app.post('/recipes', function (req, res) {
     var db = new JsonDB("VandewberryDB", true, false);
     var allRecipes = db.getData("/recipes");
-    if (req.body.id == 0) {
+    if (parseInt(req.body.id) == 0) {
         if (allRecipes.length > 0)
-            var lastIndex = allRecipes[allRecipes.length - 1].id;
+            var lastIndex = parseInt(allRecipes[allRecipes.length - 1].id);
         else var lastIndex = 0;
         req.body.id = lastIndex + 1;
         allRecipes.push(req.body);
         db.push('/recipes', allRecipes);
     } else {
         var existingIndex = allRecipes.findIndex(function (recipe) {
-            return recipe.id == req.body.id;
+            return parseInt(recipe.id) == parseInt(req.body.id);
         });
         db.push('/recipes[' + existingIndex + ']', req.body);
     }
@@ -73,10 +73,10 @@ app.post('/recipes', function (req, res) {
 
 app.get('/recipes/delete', function (req, res) {
     var db = new JsonDB("VandewberryDB", true, false);
-    var id = req.query.id; // $_GET["id"]
+    var id = parseInt(req.query.id); // $_GET["id"]
     var allRecipes = db.getData("/recipes");
     var toDelete = allRecipes.findIndex(function (recipe) {
-        return recipe.id == id;
+        return parseInt(recipe.id) == id;
     });
     var data = { requestedID: id};
     if (toDelete) {

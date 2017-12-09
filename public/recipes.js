@@ -76,6 +76,7 @@ function save_recipe() {
             var toRemove = vm.allRecipes().find(function (recipe) { return recipe.id == data.id; });
             vm.allRecipes.remove(toRemove);
         }
+        newRecipe.id = data.id;
         vm.allRecipes.push(new Recipe(newRecipe));
         vm.allRecipes.sort(function (r1, r2) { return r1.name.localeCompare(r2.name); });
     });
