@@ -9,12 +9,12 @@ class Board {
 
 class Ingredient {
     name: string = "";
-    quantity: string = "";
     due: string = "";
 }
 
 class Material {
     ingredients: Ingredient[] = [new Ingredient()];
+    quantity: string = "";
     required: boolean = true;
 };
 

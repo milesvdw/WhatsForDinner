@@ -3,7 +3,7 @@ var foodInventoryTableId = "5a2059c7a009418e7e2c622c";
 
 
 function isMaterialAvailable(material: Material, ingredients: Ingredient[] = vm.availableIngredients()): boolean {
-    var match = material.find(function (ingredient) {
+    var match = material.ingredients.find(function (ingredient) {
         return isIngredientAvailable(ingredient, ingredients)
     });
     return !!match;
@@ -16,7 +16,7 @@ function fuzzyCompare(str1, str2, fuzz) {
 function compareIngredients(a: Ingredient, b: Ingredient) {
     var str1 = a.name.replace(' ', '').toLowerCase();
     var str2 = b.name.replace(' ', '').toLowerCase();
-    return fuzzyCompare(str1, str2, 's') || fuzzyCompare(str1, str2, 'cooked');
+    return fuzzyCompare(str1, str2, 's') || fuzzyCompare(str1, str2, 'es') || fuzzyCompare(str1, str2, 'cooked');
 }
 
 function isIngredientAvailable(ingredient: Ingredient, ingredients: Ingredient[] = vm.availableIngredients()): boolean {
@@ -39,8 +39,8 @@ function remove_row(row) {
 }
 
 function print_material(material: Material) {
-    var quantity: string = material[0].quantity ? material[0].quantity + ' ' : '';
-    var ingredients = material.map(function (ingredient) { return ingredient.name }).join('or ');
+    var quantity: string = material.quantity ? material.quantity + ' ' : '';
+    var ingredients = material.ingredients.map(function (ingredient) { return ingredient.name }).join('or ');
     return quantity + ingredients;
 }
 

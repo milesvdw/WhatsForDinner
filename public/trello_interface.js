@@ -7,14 +7,21 @@ class Board {
 class Ingredient {
     constructor() {
         this.name = "";
-        this.quantity = "";
         this.due = "";
     }
 }
+class Material {
+    constructor() {
+        this.ingredients = [new Ingredient()];
+        this.quantity = "";
+        this.required = true;
+    }
+}
+;
 class Recipe {
     constructor(init) {
         this.id = "0";
-        this.materials = ko.observableArray([[new Ingredient()]]); //each top-level item represents a list of ingredients which may replace/substitute each other
+        this.materials = ko.observableArray([new Material()]); //each top-level item represents a list of ingredients which may replace/substitute each other
         this.description = "";
         this.name = "";
         this.Save = (then) => {
@@ -48,13 +55,17 @@ class Recipe {
         var parsedMaterials = this.materials().map(function (ingredientRow) {
             var quantity = ingredientRow[0].quantity;
             var ingredients = ingredientRow[0].name.split(',');
-            return ingredients.map(function (i) {
-                return {
-                    quantity: quantity,
-                    name: i.trim(),
-                    due: null
-                };
-            });
+            var required = ingredientRow[0].required;
+            return {
+                ingredients: ingredients.map(function (i) {
+                    return {
+                        quantity: quantity,
+                        name: i.trim(),
+                        due: null
+                    };
+                }),
+                required: required
+            };
         }) || [];
         this.materials(parsedMaterials || []);
         return this;
@@ -62,8 +73,11 @@ class Recipe {
     UnparseIngredients() {
         this.materials(this.materials().map(function (material) {
             var combinedIngredient = material[0];
-            combinedIngredient.name = material.map(function (ingredient) { return ingredient.name; }).join(', ');
-            return [combinedIngredient];
+            combinedIngredient.name = material.ingredients.map(function (ingredient) { return ingredient.name; }).join(', ');
+            return {
+                ingredients: [combinedIngredient],
+                required: material.required
+            };
         }));
         return this;
     }
