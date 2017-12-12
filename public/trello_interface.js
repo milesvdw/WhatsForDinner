@@ -50,12 +50,15 @@ class Recipe {
         Object.assign(this, init);
         if (init && !ko.isObservable(init.materials))
             this.materials = ko.observableArray(init.materials || []);
+        this.materials().forEach(function (material) {
+            material.required = material.required === true || material.required == 'true'; //unfortunate hack due to the fact that values are stored in the database as strings.
+        });
     }
     ParseIngredients() {
         var parsedMaterials = this.materials().map(function (ingredientRow) {
-            var quantity = ingredientRow[0].quantity;
-            var ingredients = ingredientRow[0].name.split(',');
-            var required = ingredientRow[0].required;
+            var quantity = ingredientRow.quantity;
+            var ingredients = ingredientRow.ingredients[0].name.split(',');
+            var required = ingredientRow.required;
             return {
                 ingredients: ingredients.map(function (i) {
                     return {
@@ -64,7 +67,8 @@ class Recipe {
                         due: null
                     };
                 }),
-                required: required
+                required: required,
+                quantity: quantity
             };
         }) || [];
         this.materials(parsedMaterials || []);
@@ -72,11 +76,12 @@ class Recipe {
     }
     UnparseIngredients() {
         this.materials(this.materials().map(function (material) {
-            var combinedIngredient = material[0];
+            var combinedIngredient = material.ingredients[0];
             combinedIngredient.name = material.ingredients.map(function (ingredient) { return ingredient.name; }).join(', ');
             return {
                 ingredients: [combinedIngredient],
-                required: material.required
+                required: material.required,
+                quantity: material.quantity
             };
         }));
         return this;

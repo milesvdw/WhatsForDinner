@@ -23,7 +23,7 @@ function isIngredientAvailable(ingredient, ingredients = vm.availableIngredients
 function computePossibleRecipes(recipes, ingredients) {
     return recipes.filter(function (recipe) {
         var missingMaterials = recipe.materials().filter(function (material) {
-            return !isMaterialAvailable(material, ingredients);
+            return material.required && !isMaterialAvailable(material, ingredients);
         });
         return !(missingMaterials.length > 0);
     });

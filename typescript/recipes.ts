@@ -28,7 +28,7 @@ function isIngredientAvailable(ingredient: Ingredient, ingredients: Ingredient[]
 function computePossibleRecipes(recipes: Recipe[], ingredients: Ingredient[]): Recipe[] {
     return recipes.filter(function (recipe: Recipe) {
         var missingMaterials = recipe.materials().filter(function (material: Material) {
-            return !isMaterialAvailable(material, ingredients);
+            return material.required && !isMaterialAvailable(material, ingredients);
         });
         return !(missingMaterials.length > 0);
     });

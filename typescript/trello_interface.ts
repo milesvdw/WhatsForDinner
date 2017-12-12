@@ -16,6 +16,7 @@ class Material {
     ingredients: Ingredient[] = [new Ingredient()];
     quantity: string = "";
     required: boolean = true;
+
 };
 
 class Recipe {
@@ -27,6 +28,9 @@ class Recipe {
     public constructor(init?: Partial<Recipe>) {
         Object.assign(this, init);
         if (init && !ko.isObservable(init.materials)) this.materials = ko.observableArray(init.materials as Material[] || []);
+        this.materials().forEach(function (material) {
+            material.required = material.required === true || material.required as any == 'true'; //unfortunate hack due to the fact that values are stored in the database as strings.
+        }); 
     }
 
     public Save = (then: Function): void => {
@@ -55,9 +59,9 @@ class Recipe {
 
     ParseIngredients(): Recipe {
         var parsedMaterials: Material[] = this.materials().map(function (ingredientRow) { //TODO: I think there ought to be a better way to map the selector to the list than this...
-            var quantity: string = ingredientRow[0].quantity;
-            var ingredients: string[] = ingredientRow[0].name.split(',');
-            var required: boolean = ingredientRow[0].required;
+            var quantity: string = ingredientRow.quantity;
+            var ingredients: string[] = ingredientRow.ingredients[0].name.split(',');
+            var required: boolean = ingredientRow.required;
 
             return {
                 ingredients: ingredients.map(function (i) {
@@ -67,7 +71,8 @@ class Recipe {
                         due: null
                     } as Ingredient
                 }),
-                required: required
+                required: required,
+                quantity: quantity
             }
         }) || [];
         this.materials(parsedMaterials || []);
@@ -76,11 +81,12 @@ class Recipe {
 
     UnparseIngredients(): Recipe {
         this.materials(this.materials().map(function (material: Material) {
-            var combinedIngredient: Ingredient = material[0];
+            var combinedIngredient: Ingredient = material.ingredients[0];
             combinedIngredient.name = material.ingredients.map(function (ingredient) { return ingredient.name }).join(', ');
             return {
                 ingredients: [combinedIngredient],
-                required: material.required
+                required: material.required,
+                quantity: material.quantity
             }
         }));
         return this;

@@ -10,9 +10,9 @@
     },
   "scripts": {
     "start": "node index.js",
-      "build-css": "“node-sass",
-      "--include-path" "scss",
-      "scss/main.scss" "public/css/main.css”"
+      "build-css": "node-sass",
+      "--include-path": "scss",
+      "scss/main.scss": "public/css/main.css"
   },
     "dependencies": {
         "@types/jquery": "^3.2.16",

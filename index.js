@@ -68,7 +68,7 @@ app.post('/recipes', function (req, res) {
     }
 
     res.setHeader('Content-Type', 'application/json');
-    res.send({ id: req.body.id });
+    res.send(req.body);
 });
 
 app.get('/recipes/delete', function (req, res) {
