@@ -50,7 +50,6 @@
             <div class="col-sm-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <a class="btn btn-small pull-right icon-btn btn-success glyphicon btn-glyphicon glyphicon-plus img-circle text-success" data-target="#add_recipe_modal" data-toggle="modal"></a>
                         <h4>Current Possibilities</h4>
                     </div>
                     <div class="panel-body" data-bind="foreach: vm.possibleRecipes">
@@ -58,7 +57,7 @@
                             <span class="btn btn-block btn-secondary">
                                 <span data-toggle="collapse" data-bind="text: $data.name, attr: {'data-target': '#possible_recipe_details_' + $data.id}"></span>
                             </span>
-                            <div data-bind="attr: {id: 'all_recipe_details_' + $data.id}" class="collapse">
+                            <div data-bind="attr: {id: 'possible_recipe_details_' + $data.id}" class="collapse">
                                 <ul class="list-group well" >
                                     <li class="list-group-item list-group-item-info" data-bind="text: $data.description">
                                     </li>
@@ -95,7 +94,7 @@
                                     <!--ko foreach: $data.materials-->
                                     <li class="list-group-item" data-bind="css: {'list-group-item-danger': $data.required && !isMaterialAvailable($data), 'list-group-item-warning': !$data.required && !isMaterialAvailable($data)}">
                                         <!--nested lists - each 'material' is a list of interchangeable 'ingredients'-->
-                                        <span data-bind="text: print_material($data)"></span>
+                                        <span data-bind="text: ' ' + print_material($data)"></span>
                                     </li>
                                     <!--/ko-->
                                 </ul>
