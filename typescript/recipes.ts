@@ -40,7 +40,7 @@ function remove_row(row) {
 
 function print_material(material: Material) {
     var quantity: string = material.quantity ? material.quantity + ' ' : '';
-    var ingredients = material.ingredients.map(function (ingredient) { return ingredient.name }).join('or ');
+    var ingredients = material.ingredients.map(function (ingredient) { return ingredient.name }).join(' or ');
     return quantity + ingredients;
 }
 

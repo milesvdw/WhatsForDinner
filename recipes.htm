@@ -64,7 +64,7 @@
                                     <!--ko foreach: $data.materials-->
                                     <li class="list-group-item" data-bind="css: {'list-group-item-danger': $data.required && !isMaterialAvailable($data), 'list-group-item-warning': !$data.required && !isMaterialAvailable($data)}">
                                         <!--nested lists - each 'material' is a list of interchangeable 'ingredients'-->
-                                        <span data-bind="text: ' ' + print_material($data)"></span>
+                                        <span data-bind="text: print_material($data)"></span>
                                     </li>
                                     <!--/ko-->
                                 </ul>
@@ -94,7 +94,7 @@
                                     <!--ko foreach: $data.materials-->
                                     <li class="list-group-item" data-bind="css: {'list-group-item-danger': $data.required && !isMaterialAvailable($data), 'list-group-item-warning': !$data.required && !isMaterialAvailable($data)}">
                                         <!--nested lists - each 'material' is a list of interchangeable 'ingredients'-->
-                                        <span data-bind="text: ' ' + print_material($data)"></span>
+                                        <span data-bind="text: print_material($data)"></span>
                                     </li>
                                     <!--/ko-->
                                 </ul>
