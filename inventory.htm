@@ -1,0 +1,163 @@
+﻿<html>
+
+<head>
+    <!-- JS -->
+    <script src="jquery.min.js"></script>
+    <script type='text/javascript' src='knockout-latest.js'></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="knockstrap.min.js"></script>
+
+    <meta charset="utf-8">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="styles/checkbox.css">
+    <style>
+        .inventory-row {
+            margin-top: 2px;
+        }
+
+        .glyph-button {
+            cursor: pointer;
+            vertical-align: center;
+            text-decoration: none !important;
+            /*forgive me*/
+        }
+
+        .glyph-center {
+            margin-top: 25%;
+        }
+
+        checkbox {
+            display: table;
+            width: 100%;
+            height: 100%;
+            display: table-cell;
+            width: 100%;
+            height: 100%;
+            vertical-align: middle;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- navigation bar -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/recipes"> Recipes </a>
+            <a class="navbar-brand" href="/inventory"> Inventory </a>
+        </div>
+    </nav>
+
+    <!-- main body of our application -->
+    <div class="container">
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>Inventory</h4>
+                </div>
+                <div class="panel-body" data-bind="foreach: $root.in_house">
+                    <div class="row inventory-row">
+                        <span class="btn btn-block btn-secondary" data-bind="attr: {'data-target': '#ingredients' + $data.id}">
+                            <span data-bind="text: $data.name"></span>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a class="btn btn-small pull-right icon-btn btn-success glyphicon btn-glyphicon glyphicon-plus img-circle text-success" data-target="#add_ingredient_modal"
+                        data-toggle="modal"></a>
+                    <h4>Shopping List</h4>
+                </div>
+                <div class="panel-body" data-bind="foreach: $root.shopping_list">
+                    <div class="row inventory-row">
+                        <span class="btn btn-block btn-secondary" data-bind="attr: {'data-target': '#ingredients' + $data.id}">
+                            <span data-bind="text: $data.name"></span>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>Not needed</h4>
+                </div>
+                <div class="panel-body" data-bind="foreach: $root.archived_ingredients">
+                    <div class="row inventory-row">
+                        <span class="btn btn-block btn-secondary" data-bind="attr: {'data-target': '#ingredients' + $data.id}">
+                            <span data-bind="text: $data.name"></span>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="modal fade" id="add_ingredient_modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" id="add_ingredient_header">
+                        <h4 class="text-center">Create Ingredient</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div id="new_ingredient" class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label for="name">Ingredient Name</label>
+                                            <input type="text" id="name" class="form-control" data-bind="value: $root.add_edit_ingredient().name" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label for="name">Category (e.g. 'deli' or 'produce'</label>
+                                            <input type="text" id="name" class="form-control" data-bind="value: $root.add_edit_ingredient().category" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label for="shelf_life">Does it ever expire?</label>
+                                            <input type="checkbox" id="shelf_life" class="form-control" data-bind="value: $root.add_edit_ingredient().expires" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <label for="shelf_life">If so, how many days does it last?</label>
+                                            <input type="text" id="shelf_life" class="form-control" data-bind="value: $root.add_edit_ingredient().shelf_life" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <button class="btn btn-large btn-info pull-right" data-bind="click: function() { return save_inventory_item();}" data-target="#add_ingredient_modal"
+                                            data-toggle="modal">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="InventoryVM.js" type="module"></script>
+</body>
+
+</html>
