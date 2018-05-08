@@ -7,12 +7,17 @@ app.use(express.static('node_modules/jquery/dist'));
 app.use(express.static('node_modules/bootstrap/dist'));
 app.use(express.static('node_modules/knockout/build/output'));
 app.use(express.static('node_modules/knockstrap/build'));
+app.use(express.static('node_modules/requirejs'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 var JsonDB = require('node-json-db');
 
-app.get('/', function (req, res) {
+app.get('/', function(req, res) {
+    res.sendFile(__dirname + "/recipes.htm");
+})
+
+app.get('/recipes', function (req, res) {
     res.sendFile(__dirname + "/recipes.htm");
 })
 
@@ -35,19 +40,44 @@ var server = app.listen(port, function () {
 })
 
 
-app.get('/recipes', function (req, res) {
+app.get('/recipes/get', function (req, res) {
     //The second argument is used to tell the DB to save after each push 
     //If you put false, you'll have to call the save() method. 
     //The third argument is to ask JsonDB to save the database in an human readable format. (default false) 
     var db = new JsonDB("VandewberryDB", true, false);
     var id = parseInt(req.query.id); // $_GET["id"]
     var data = {};
-    if (id) data = db.getData("/" + id);
+    if (id) data = db.getData("/recipes").first(function(item) { return item.id == id; });
     else data = db.getData("/recipes");
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(data));
 
 
+});
+
+app.get('/inventory/get', function (req, res) {
+    //The second argument is used to tell the DB to save after each push 
+    //If you put false, you'll have to call the save() method. 
+    //The third argument is to ask JsonDB to save the database in an human readable format. (default false) 
+    var db = new JsonDB("VandewberryDB", true, false);
+    var name = parseInt(req.query.name); // $_GET["name"]
+    var data = {};
+    if (name) data = db.getData("/inventory").first(function(item) { return item.name == name; });
+    else data = db.getData("/inventory");
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(data));
+
+
+});
+
+app.post('/inventory', function (req, res) {
+    var db = new JsonDB("VandewberryDB", true, false);
+    var allIngredients = db.getData("/inventory");
+    allIngredients.push(req.body);
+    db.push('/inventory', allIngredients);
+
+    res.setHeader('Content-Type', 'application/json');
+    res.send(req.body);
 });
 
 app.post('/recipes', function (req, res) {
@@ -89,4 +119,8 @@ app.get('/recipes/delete', function (req, res) {
     }
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(data));
+});
+
+app.get('/inventory', function (req, res) {
+    res.sendFile(__dirname + "/inventory.htm");
 });
