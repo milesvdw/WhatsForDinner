@@ -61,9 +61,13 @@
                 </div>
                 <div class="panel-body" data-bind="foreach: $root.in_house">
                     <div class="row inventory-row">
-                        <span class="btn btn-block btn-secondary" data-bind="attr: {'data-target': '#ingredients' + $data.id}">
+                        <span class="btn btn-block btn-secondary" data-bind="attr: {'data-target': '#ingredients' + $data.name.replace(' ','_')}" data-toggle="collapse">
                             <span data-bind="text: $data.name"></span>
                         </span>
+                        <div data-bind="attr: {id: 'ingredients' + $data.name.replace(' ','_')}" class="collapse">
+                            <a class="btn btn-small pull-left icon-btn btn-danger glyphicon btn-glyphicon glyphicon-folder-open img-circle text-error" data-bind="click: function() { $root.archive_ingredient($data); }"></a>
+                            <a class="btn btn-small pull-right icon-btn btn-warning glyphicon btn-glyphicon glyphicon-shopping-cart img-circle text-success" data-bind="click: function() { $root.unstock_ingredient($data); }"></a>
+                        </div>
                     </div>
                 </div>
 
@@ -78,9 +82,13 @@
                 </div>
                 <div class="panel-body" data-bind="foreach: $root.shopping_list">
                     <div class="row inventory-row">
-                        <span class="btn btn-block btn-secondary" data-bind="attr: {'data-target': '#ingredients' + $data.id}">
+                        <span class="btn btn-block btn-secondary" data-bind="attr: {'data-target': '#ingredients' + $data.name.replace(' ','_')}" data-toggle="collapse">
                             <span data-bind="text: $data.name"></span>
                         </span>
+                        <div data-bind="attr: {id: 'ingredients' + $data.name.replace(' ','_')}" class="collapse">
+                            <a class="btn btn-small pull-left icon-btn btn-success glyphicon btn-glyphicon glyphicon-plus img-circle text-success" data-bind="click: function() { $root.stock_ingredient($data); }"></a>
+                            <a class="btn btn-small pull-right icon-btn btn-danger glyphicon btn-glyphicon glyphicon-folder-open img-circle text-error" data-bind="click: function() { $root.archive_ingredient($data); }"></a>
+                        </div>
                     </div>
                 </div>
 
@@ -93,9 +101,13 @@
                 </div>
                 <div class="panel-body" data-bind="foreach: $root.archived_ingredients">
                     <div class="row inventory-row">
-                        <span class="btn btn-block btn-secondary" data-bind="attr: {'data-target': '#ingredients' + $data.id}">
-                            <span data-bind="text: $data.name"></span>
-                        </span>
+                            <span class="btn btn-block btn-secondary" data-bind="attr: {'data-target': '#ingredients' + $data.name.replace(' ','_')}" data-toggle="collapse">
+                                <span data-bind="text: $data.name"></span>
+                            </span>
+                            <div data-bind="attr: {id: 'ingredients' + $data.name.replace(' ','_')}" class="collapse">
+                                <a class="btn btn-small pull-left icon-btn btn-warning glyphicon btn-glyphicon glyphicon-shopping-cart img-circle text-success" data-bind="click: function() { $root.unstock_ingredient($data); }"></a>
+                                <a class="btn btn-small pull-right icon-btn btn-success glyphicon btn-glyphicon glyphicon-plus img-circle text-success" data-bind="click: function() { $root.stock_ingredient($data); }"></a>
+                            </div>
                     </div>
                 </div>
 

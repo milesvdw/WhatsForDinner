@@ -8,17 +8,17 @@ class InventoryViewModel {
 
     public inventory = ko.observableArray([] as Models.Ingredient[]);
 
-    public in_house = ko.computed(() => {
+    public in_house = ko.pureComputed(() => {
         return this.inventory().filter((ingredient) => {
             return ingredient.status == "have";
         })
     })
-    public shopping_list = ko.computed(() => {
+    public shopping_list = ko.pureComputed(() => {
         return this.inventory().filter((ingredient) => {
             return ingredient.status == "need";
         })
     })
-    public archived_ingredients = ko.computed(() => {
+    public archived_ingredients = ko.pureComputed(() => {
         return this.inventory().filter((ingredient) => {
             return ingredient.status == "archived";
         })
@@ -32,13 +32,31 @@ class InventoryViewModel {
     }
 
     public save_inventory_item() {
-    
+        if(this.inventory().some((ingredient) => { return ingredient.name == vm.add_edit_ingredient().name })) {
+            alert("don't create duplicate ingredients");
+            return;
+        };
         vm.add_edit_ingredient().Save((data) => {
             vm.inventory.push(new Models.Ingredient(vm.add_edit_ingredient()));
             vm.inventory.sort(function (r1, r2) { return r1.name.localeCompare(r2.name) });
         });
     
         return false;
+    }
+
+    public stock_ingredient(ingredient) {
+        ingredient.status = "have";
+        this.inventory.notifySubscribers();
+    }
+
+    public unstock_ingredient(ingredient) {
+        ingredient.status = "need";
+        this.inventory.notifySubscribers();
+    }
+
+    public archive_ingredient(ingredient) {
+        ingredient.status = "archived";
+        this.inventory.notifySubscribers();
     }
 }
 
