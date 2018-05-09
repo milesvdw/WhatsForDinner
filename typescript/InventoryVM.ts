@@ -27,7 +27,7 @@ class InventoryViewModel {
     public delete_ingredient(id) {
         alert("not implemented");
     }
-    
+     
     public edit_ingredient(id) {
     }
 
