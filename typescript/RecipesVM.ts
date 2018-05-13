@@ -54,6 +54,10 @@ class RecipeViewModel {
     
         return false;
     }
+
+    public addMaterial() {
+        this.add_edit_recipe().materials.push(new Models.Material());
+    }
 }
 
 let vm = new RecipeViewModel();

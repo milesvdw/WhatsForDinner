@@ -1,6 +1,8 @@
 var express = require('express')
     , bodyParser = require('body-parser');
 var app = express();
+const mongodb = require('mongodb');
+const db_name = 'heroku_6ftkk7t9';
 
 app.use(express.static('public'));
 app.use(express.static('node_modules/jquery/dist'));
@@ -11,25 +13,13 @@ app.use(express.static('node_modules/requirejs'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-var JsonDB = require('node-json-db');
-
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
     res.sendFile(__dirname + "/recipes.htm");
 })
 
 app.get('/recipes', function (req, res) {
     res.sendFile(__dirname + "/recipes.htm");
-})
-
-app.get('/process_get', function (req, res) {
-    // Prepare output in JSON format
-    response = {
-        first_name: req.query.first_name,
-        last_name: req.query.last_name
-    };
-    console.log(response);
-    res.end(JSON.stringify(response));
-})
+});
 
 var port = process.env.PORT || 1337;
 var server = app.listen(port, function () {
@@ -39,86 +29,114 @@ var server = app.listen(port, function () {
 
 })
 
-
 app.get('/recipes/get', function (req, res) {
-    //The second argument is used to tell the DB to save after each push 
-    //If you put false, you'll have to call the save() method. 
-    //The third argument is to ask JsonDB to save the database in an human readable format. (default false) 
-    var db = new JsonDB("VandewberryDB", true, false);
-    var id = parseInt(req.query.id); // $_GET["id"]
-    var data = {};
-    if (id) data = db.getData("/recipes").first(function(item) { return item.id == id; });
-    else data = db.getData("/recipes");
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify(data));
 
+    mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, client) {
+        if (err) throw err;
 
+        var db = client.db(db_name);
+
+        var id = parseInt(req.query.id);
+
+        var respond = function (err, result) {
+            if (err) throw err;
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(result));
+        }
+        if (id) {
+            var query = { id: id };
+            data = db.collection("recipes").find(query).toArray(respond);
+        }
+        else data = db.collection("recipes").find().toArray(respond);
+    });
 });
 
 app.get('/inventory/get', function (req, res) {
-    //The second argument is used to tell the DB to save after each push 
-    //If you put false, you'll have to call the save() method. 
-    //The third argument is to ask JsonDB to save the database in an human readable format. (default false) 
-    var db = new JsonDB("VandewberryDB", true, false);
-    var name = parseInt(req.query.name); // $_GET["name"]
-    var data = {};
-    if (name) data = db.getData("/inventory").first(function(item) { return item.name == name; });
-    else data = db.getData("/inventory");
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify(data));
 
+    mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, client) {
+        if (err) throw err;
 
+        var db = client.db(db_name);
+
+        var name = parseInt(req.query.name);
+
+        var respond = function (err, result) {
+            console.log(err);
+            if (err) throw err;
+            console.log(result);
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(result));
+        }
+        if (name) {
+            var query = { name: name };
+            data = db.collection("inventory").find(query).toArray(respond);
+        }
+        else data = db.collection("inventory").find().toArray(respond);
+    });
 });
 
 app.post('/inventory', function (req, res) {
-    var db = new JsonDB("VandewberryDB", true, false);
-    var allIngredients = db.getData("/inventory");
-    allIngredients.push(req.body);
-    db.push('/inventory', allIngredients);
+    mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, client) {
+        if (err) throw err;
 
-    res.setHeader('Content-Type', 'application/json');
-    res.send(req.body);
+        var db = client.db(db_name);
+
+        var name = parseInt(req.query.name);
+
+        var respond = function (err, result) {
+            if (err != null) throw err;
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(result));
+        }
+
+        if (name == null) throw err;
+        var query = { name: name };
+        data = db.collection("inventory").insert(req.body, { w: 1 }, respond);
+
+    });
 });
 
 app.post('/recipes', function (req, res) {
-    var db = new JsonDB("VandewberryDB", true, false);
-    var allRecipes = db.getData("/recipes");
-    if (parseInt(req.body.id) == 0) {
-        if (allRecipes.length > 0)
-            var lastIndex = parseInt(allRecipes[allRecipes.length - 1].id);
-        else var lastIndex = 0;
-        req.body.id = lastIndex + 1;
-        allRecipes.push(req.body);
-        db.push('/recipes', allRecipes);
-    } else {
-        var existingIndex = allRecipes.findIndex(function (recipe) {
-            return parseInt(recipe.id) == parseInt(req.body.id);
-        });
-        db.push('/recipes[' + existingIndex + ']', req.body);
-    }
+    mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, client) {
+        if (err) throw err;
 
-    res.setHeader('Content-Type', 'application/json');
-    res.send(req.body);
+        var db = client.db(db_name);
+
+        var name = parseInt(req.query.name);
+
+        var respond = function (err, result) {
+            if (err != null) throw err;
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(result));
+        }
+
+        if (name == null) throw err;
+        var query = { name: name };
+        data = db.collection("recipe").insert(req.body, { w: 1 }, respond);
+
+    });
 });
 
 app.get('/recipes/delete', function (req, res) {
-    var db = new JsonDB("VandewberryDB", true, false);
-    var id = parseInt(req.query.id); // $_GET["id"]
-    var allRecipes = db.getData("/recipes");
-    var toDelete = allRecipes.findIndex(function (recipe) {
-        return parseInt(recipe.id) == id;
+    mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, client) {
+        if (err) throw err;
+
+        var db = client.db(db_name);
+
+        var name = parseInt(req.query.name);
+
+        var respond = function (err, n_removed) {
+            if (err != null) throw err;
+
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(n_removed ? 'success' : 'failed - no such recipe'));
+        }
+
+        if (name == null) throw err;
+        var query = { name: name };
+        data = db.collection("inventory").remove({id: req.query.id}, { w: 1 }, respond);
+
     });
-    var data = { requestedID: id};
-    if (toDelete) {
-        data.recipe = db.getData("/recipes[" + toDelete + "]");
-        db.delete("/recipes[" + toDelete + "]");
-        data.status = "success";
-    }
-    else {
-        data.status = "failed - no such recipe exists";
-    }
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify(data));
 });
 
 app.get('/inventory', function (req, res) {
